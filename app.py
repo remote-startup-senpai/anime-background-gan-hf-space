@@ -106,7 +106,7 @@ gr.Interface(
     fn=inference,
     inputs=[
         gr.inputs.Image(type="pil", label="Input Photo"),
-        gradio.inputs.Dropdown(
+        gr.inputs.Dropdown(
             STYLE_CHOICE_LIST,
             type="value",
             default=DEFAULT_STYLE,
