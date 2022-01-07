@@ -59,9 +59,11 @@ examples = [
 
 
 gr.Interface(
-    inference,
-    [gr.inputs.Image(type="pil")],
-    gr.outputs.Image(type="pil"),
+    fn=inference,
+    inputs=gr.inputs.Textbox(
+        lines=1, placeholder=None, default="", label=None
+    ),
+    outputs=gr.outputs.Textbox(type="auto", label=None),
     title=title,
     description=description,
     article=article,
