@@ -129,7 +129,7 @@ gr.Interface(
     ],
     outputs=gr.outputs.Image(
         type="pil",
-        label="Make sure to resize to less than 1280px on both width and height if an error occurrs!",
+        label="Output Image",
     ),
     title=title,
     description=description,
