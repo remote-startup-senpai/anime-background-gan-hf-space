@@ -66,8 +66,8 @@ gr.Interface(
         lines=1, placeholder=None, default="", label=None
     ),
     outputs=gr.outputs.Textbox(type="auto", label=None),
-    title=None,
-    description=None,
+    title=title,
+    description=description,
     article=None,
     examples=None,
     allow_flagging=False,
