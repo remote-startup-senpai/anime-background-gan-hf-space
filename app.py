@@ -119,5 +119,5 @@ gr.Interface(
     article=article,
     examples=examples,
     allow_flagging="never",
-    allow_screenshot=False
-).launch(enable_queue=True)
+    allow_screenshot=False,
+).launch(enable_queue=True, share=True)
