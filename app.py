@@ -49,8 +49,8 @@ def inference(img):
 
 
 title = "Anime Background GAN"
-description = "<a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a> based on <a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Yijunmaverick's implementation</a>."
-article = "<p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p> <center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
+description = ""
+article = "<p style='text-align: center'><a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a></p><p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p><p style='text-align: center'><a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Original Implementation from Yijunmaverick</a></p><center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
 
 examples = [
     ["examples/garden_in.jpeg", "examples/garden_out.jpg"],
@@ -64,7 +64,7 @@ gr.Interface(
     outputs=gr.outputs.Image(type="pil"),
     title=title,
     description=description,
-    article=None,
+    article=article,
     examples=None,
     allow_flagging=False,
     allow_screenshot=False,
