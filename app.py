@@ -16,42 +16,40 @@ STYLE = "shinkai_makoto"
 MODEL_PATH = "models"
 COLOUR_MODEL = "RGB"
 
-# model = Transformer()
-# model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{STYLE}.pth")))
-# model.eval()
+model = Transformer()
+model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{STYLE}.pth")))
+model.eval()
 
-# disable_gpu = torch.cuda.is_available()
+disable_gpu = torch.cuda.is_available()
 
 
 def inference(img):
-    # # load image
-    # input_image = img.convert(COLOUR_MODEL)
-    # input_image = np.asarray(input_image)
-    # # RGB -> BGR
-    # input_image = input_image[:, :, [2, 1, 0]]
-    # input_image = transforms.ToTensor()(input_image).unsqueeze(0)
-    # # preprocess, (-1, 1)
-    # input_image = -1 + 2 * input_image
+    # load image
+    input_image = img.convert(COLOUR_MODEL)
+    input_image = np.asarray(input_image)
+    # RGB -> BGR
+    input_image = input_image[:, :, [2, 1, 0]]
+    input_image = transforms.ToTensor()(input_image).unsqueeze(0)
+    # preprocess, (-1, 1)
+    input_image = -1 + 2 * input_image
 
-    # if disable_gpu:
-    #     input_image = Variable(input_image).float()
-    # else:
-    #     input_image = Variable(input_image).cuda()
+    if disable_gpu:
+        input_image = Variable(input_image).float()
+    else:
+        input_image = Variable(input_image).cuda()
 
-    # # forward
-    # output_image = model(input_image)
-    # output_image = output_image[0]
-    # # BGR -> RGB
-    # output_image = output_image[[2, 1, 0], :, :]
-    # output_image = output_image.data.cpu().float() * 0.5 + 0.5
+    # forward
+    output_image = model(input_image)
+    output_image = output_image[0]
+    # BGR -> RGB
+    output_image = output_image[[2, 1, 0], :, :]
+    output_image = output_image.data.cpu().float() * 0.5 + 0.5
 
-    # return output_image
-
-    return ""
+    return output_image
 
 
-title = "AnimeBackgroundGAN"
-description = "CartoonGAN from [Chen et.al](http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf) based on [Yijunmaverick's implementation](https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch)"
+title = "Anime Background GAN"
+description = "<a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a> based on <a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Yijunmaverick's implementation</a>."
 article = "<p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p> <center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
 
 examples = [
@@ -62,10 +60,8 @@ examples = [
 
 gr.Interface(
     fn=inference,
-    inputs=gr.inputs.Textbox(
-        lines=1, placeholder=None, default="", label=None
-    ),
-    outputs=gr.outputs.Textbox(type="auto", label=None),
+    inputs=[gr.inputs.Image(type="pil")],
+    outputs=gr.outputs.Image(type="pil"),
     title=title,
     description=description,
     article=None,
