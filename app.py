@@ -1,4 +1,5 @@
 import os
+import sys
 import torch
 import gradio as gr
 import numpy as np
@@ -12,7 +13,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-LOAD_SIZE = 1280
+MAX_DIMENSION = 1280
 MODEL_PATH = "models"
 COLOUR_MODEL = "RGB"
 
@@ -66,33 +67,40 @@ def get_model(style):
         return shinkai_model
 
 
+def validate_image_size(img):
+    print(f"{img.height} x {img.width}")
+    if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
+        raise RuntimeError(
+            "Image size is too large. Please use an image less than {MAX_DIMENSION}px on both width and height"
+        )
+
+
 def inference(img, style):
-    try:
-        # load image
-        input_image = img.convert(COLOUR_MODEL)
-        input_image = np.asarray(input_image)
-        # RGB -> BGR
-        input_image = input_image[:, :, [2, 1, 0]]
-        input_image = transforms.ToTensor()(input_image).unsqueeze(0)
-        # preprocess, (-1, 1)
-        input_image = -1 + 2 * input_image
+    validate_image_size(img)
 
-        if disable_gpu:
-            input_image = Variable(input_image).float()
-        else:
-            input_image = Variable(input_image).cuda()
+    # load image
+    input_image = img.convert(COLOUR_MODEL)
+    input_image = np.asarray(input_image)
+    # RGB -> BGR
+    input_image = input_image[:, :, [2, 1, 0]]
+    input_image = transforms.ToTensor()(input_image).unsqueeze(0)
+    # preprocess, (-1, 1)
+    input_image = -1 + 2 * input_image
 
-        # forward
-        model = get_model(style)
-        output_image = model(input_image)
-        output_image = output_image[0]
-        # BGR -> RGB
-        output_image = output_image[[2, 1, 0], :, :]
-        output_image = output_image.data.cpu().float() * 0.5 + 0.5
+    if disable_gpu:
+        input_image = Variable(input_image).float()
+    else:
+        input_image = Variable(input_image).cuda()
 
-        return transforms.ToPILImage()(output_image)
-    except:
-        logger.error(f"Error while processing image {img}")
+    # forward
+    model = get_model(style)
+    output_image = model(input_image)
+    output_image = output_image[0]
+    # BGR -> RGB
+    output_image = output_image[[2, 1, 0], :, :]
+    output_image = output_image.data.cpu().float() * 0.5 + 0.5
+
+    return transforms.ToPILImage()(output_image)
 
 
 title = "Anime Background GAN"
@@ -108,7 +116,10 @@ examples = [
 gr.Interface(
     fn=inference,
     inputs=[
-        gr.inputs.Image(type="pil", label="Input Photo"),
+        gr.inputs.Image(
+            type="pil",
+            label="Input Photo (less than 1280px on both width and height)",
+        ),
         gr.inputs.Dropdown(
             STYLE_CHOICE_LIST,
             type="value",
@@ -116,11 +127,14 @@ gr.Interface(
             label="Style",
         ),
     ],
-    outputs=gr.outputs.Image(type="pil"),
+    outputs=gr.outputs.Image(
+        type="pil",
+        label="Make sure to resize to less than 1280px on both width and height if an error occurrs!",
+    ),
     title=title,
     description=description,
     article=article,
     examples=examples,
     allow_flagging="never",
     allow_screenshot=False,
-).launch(enable_queue=True, share=True)
+).launch(enable_queue=True)
