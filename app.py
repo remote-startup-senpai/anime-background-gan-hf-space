@@ -20,7 +20,7 @@ model = Transformer()
 model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{STYLE}.pth")))
 model.eval()
 
-disable_gpu = torch.cuda.is_available()
+disable_gpu = True
 
 
 def inference(img):
@@ -49,7 +49,7 @@ def inference(img):
 
 
 title = "Anime Background GAN"
-description = ""
+description = "Gradio Demo for CartoonGAN by Chen Et. Al. Models are Shinkai Makoto, Hosoda Mamoru, Kon Satoshi, and Miyazaki Hayao."
 article = "<p style='text-align: center'><a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a></p><p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p><p style='text-align: center'><a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Original Implementation from Yijunmaverick</a></p><center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
 
 examples = [
