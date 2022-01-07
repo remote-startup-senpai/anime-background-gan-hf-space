@@ -1,13 +1,10 @@
 import os
-
-os.system("pip install gradio==2.4.6")
 import torch
 import gradio as gr
 import numpy as np
-import torchvision.utils as vutils
 import torchvision.transforms as transforms
 
-from PIL import Image
+
 from torch.autograd import Variable
 from network.Transformer import Transformer
 
@@ -45,7 +42,7 @@ def inference(img):
     output_image = output_image[[2, 1, 0], :, :]
     output_image = output_image.data.cpu().float() * 0.5 + 0.5
 
-    return output_image
+    return transforms.ToPILImage()(output_image)
 
 
 title = "Anime Background GAN"
@@ -65,7 +62,7 @@ gr.Interface(
     title=title,
     description=description,
     article=article,
-    examples=None,
+    examples=examples,
     allow_flagging=False,
     allow_screenshot=False,
     enable_queue=True,
