@@ -8,19 +8,65 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 from network.Transformer import Transformer
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 LOAD_SIZE = 1280
-STYLE = "shinkai_makoto"
 MODEL_PATH = "models"
 COLOUR_MODEL = "RGB"
 
-model = Transformer()
-model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{STYLE}.pth")))
-model.eval()
+STYLE_SHINKAI = "Makoto Shinkai"
+STYLE_HOSODA = "Mamoru Hosoda"
+STYLE_MIYAZAKI = "Hayao Miyazaki"
+STYLE_KON = "Satoshi Kon"
+DEFAULT_STYLE = STYLE_SHINKAI
+STYLE_CHOICE_LIST = [STYLE_SHINKAI, STYLE_HOSODA, STYLE_MIYAZAKI, STYLE_KON]
+
+shinkai_model = Transformer()
+hosoda_model = Transformer()
+miyazaki_model = Transformer()
+kon_model = Transformer()
+
+
+shinkai_model.load_state_dict(
+    torch.load(os.path.join(MODEL_PATH, "shinkai_makoto.pth"))
+)
+hosoda_model.load_state_dict(
+    torch.load(os.path.join(MODEL_PATH, "hosoda_mamoru.pth"))
+)
+miyazaki_model.load_state_dict(
+    torch.load(os.path.join(MODEL_PATH, "miyazaki_hayao.pth"))
+)
+kon_model.load_state_dict(
+    torch.load(os.path.join(MODEL_PATH, "kon_satoshi.pth"))
+)
+
+shinkai_model.eval()
+hosoda_model.eval()
+miyazaki_model.eval()
+kon_model.eval()
 
 disable_gpu = True
 
 
-def inference(img):
+def get_model(style):
+    if style == STYLE_SHINKAI:
+        return shinkai_model
+    elif style == STYLE_HOSODA:
+        return hosoda_model
+    elif style == STYLE_MIYAZAKI:
+        return miyazaki_model
+    elif style == STYLE_KON:
+        return kon_model
+    else:
+        logger.warning(
+            f"Style {style} not found. Defaulting to Makoto Shinkai"
+        )
+        return shinkai_model
+
+
+def inference(img, style):
     # load image
     input_image = img.convert(COLOUR_MODEL)
     input_image = np.asarray(input_image)
@@ -36,6 +82,7 @@ def inference(img):
         input_image = Variable(input_image).cuda()
 
     # forward
+    model = get_model(style)
     output_image = model(input_image)
     output_image = output_image[0]
     # BGR -> RGB
@@ -47,7 +94,7 @@ def inference(img):
 
 title = "Anime Background GAN"
 description = "Gradio Demo for CartoonGAN by Chen Et. Al. Models are Shinkai Makoto, Hosoda Mamoru, Kon Satoshi, and Miyazaki Hayao."
-article = "<p style='text-align: center'><a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a></p><p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p><p style='text-align: center'><a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Original Implementation from Yijunmaverick</a></p><center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
+article = "<p style='text-align: center'><a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN Whitepaper from Chen et.al</a></p><p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p><p style='text-align: center'><a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Original Implementation from Yijunmaverick</a></p><center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
 
 examples = [
     ["examples/garden_in.jpg"],
@@ -57,7 +104,15 @@ examples = [
 
 gr.Interface(
     fn=inference,
-    inputs=[gr.inputs.Image(type="pil")],
+    inputs=[
+        gr.inputs.Image(type="pil", label="Input Photo"),
+        gradio.inputs.Dropdown(
+            STYLE_CHOICE_LIST,
+            type="value",
+            default=DEFAULT_STYLE,
+            label="Style",
+        ),
+    ],
     outputs=gr.outputs.Image(type="pil"),
     title=title,
     description=description,
