@@ -118,7 +118,6 @@ gr.Interface(
     description=description,
     article=article,
     examples=examples,
-    allow_flagging=False,
-    allow_screenshot=False,
-    enable_queue=True,
+    allow_flagging="never",
+    allow_screenshot=False
 ).launch(enable_queue=True)
