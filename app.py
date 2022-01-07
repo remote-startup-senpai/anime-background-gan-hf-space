@@ -67,29 +67,32 @@ def get_model(style):
 
 
 def inference(img, style):
-    # load image
-    input_image = img.convert(COLOUR_MODEL)
-    input_image = np.asarray(input_image)
-    # RGB -> BGR
-    input_image = input_image[:, :, [2, 1, 0]]
-    input_image = transforms.ToTensor()(input_image).unsqueeze(0)
-    # preprocess, (-1, 1)
-    input_image = -1 + 2 * input_image
+    try:
+        # load image
+        input_image = img.convert(COLOUR_MODEL)
+        input_image = np.asarray(input_image)
+        # RGB -> BGR
+        input_image = input_image[:, :, [2, 1, 0]]
+        input_image = transforms.ToTensor()(input_image).unsqueeze(0)
+        # preprocess, (-1, 1)
+        input_image = -1 + 2 * input_image
 
-    if disable_gpu:
-        input_image = Variable(input_image).float()
-    else:
-        input_image = Variable(input_image).cuda()
+        if disable_gpu:
+            input_image = Variable(input_image).float()
+        else:
+            input_image = Variable(input_image).cuda()
 
-    # forward
-    model = get_model(style)
-    output_image = model(input_image)
-    output_image = output_image[0]
-    # BGR -> RGB
-    output_image = output_image[[2, 1, 0], :, :]
-    output_image = output_image.data.cpu().float() * 0.5 + 0.5
+        # forward
+        model = get_model(style)
+        output_image = model(input_image)
+        output_image = output_image[0]
+        # BGR -> RGB
+        output_image = output_image[[2, 1, 0], :, :]
+        output_image = output_image.data.cpu().float() * 0.5 + 0.5
 
-    return transforms.ToPILImage()(output_image)
+        return transforms.ToPILImage()(output_image)
+    except:
+        logger.error(f"Error while processing image {img}")
 
 
 title = "Anime Background GAN"
