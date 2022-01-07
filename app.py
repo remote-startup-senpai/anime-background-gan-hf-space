@@ -12,14 +12,12 @@ from torch.autograd import Variable
 from network.Transformer import Transformer
 
 LOAD_SIZE = 1280
-STYLE = "Shinkai"
-MODEL_PATH = "pretrained_model"
+STYLE = "shinkai_makoto"
+MODEL_PATH = "models"
 COLOUR_MODEL = "RGB"
 
 model = Transformer()
-model.load_state_dict(
-    torch.load(os.path.join(MODEL_PATH, f"{STYLE}_net_G_float.pth"))
-)
+model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{STYLE}.pth")))
 model.eval()
 
 disable_gpu = torch.cuda.is_available()
