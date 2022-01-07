@@ -50,8 +50,8 @@ description = "Gradio Demo for CartoonGAN by Chen Et. Al. Models are Shinkai Mak
 article = "<p style='text-align: center'><a href='http://openaccess.thecvf.com/content_cvpr_2018/CameraReady/2205.pdf' target='_blank'>CartoonGAN from Chen et.al</a></p><p style='text-align: center'><a href='https://github.com/venture-anime/cartoongan-pytorch' target='_blank'>Github Repo</a></p><p style='text-align: center'><a href='https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch' target='_blank'>Original Implementation from Yijunmaverick</a></p><center><img src='https://visitor-badge.glitch.me/badge?page_id=akiyamasho' alt='visitor badge'></center></p>"
 
 examples = [
-    ["garden_in.jpg", "garden_out.jpg"],
-    ["library_in.jpg", "library_out.jpg"],
+    ["examples/garden_in.jpg"],
+    ["examples/library_in.jpg"],
 ]
 
 
