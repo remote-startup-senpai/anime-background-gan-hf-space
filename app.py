@@ -121,4 +121,4 @@ gr.Interface(
     allow_flagging=False,
     allow_screenshot=False,
     enable_queue=True,
-).launch()
+).launch(enable_queue=True)
