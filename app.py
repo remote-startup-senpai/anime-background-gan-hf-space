@@ -68,7 +68,7 @@ def get_model(style):
 
 
 def validate_image_size(img):
-    print(f"{img.height} x {img.width}")
+    logger.info(f"Image Height: {img.height}, Image Width: {img.width}")
     if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
         raise RuntimeError(
             "Image size is too large. Please use an image less than {MAX_DIMENSION}px on both width and height"
