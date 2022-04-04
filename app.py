@@ -9,6 +9,8 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 from network.Transformer import Transformer
 
+from PIL import Image
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -67,16 +69,16 @@ def get_model(style):
         return shinkai_model
 
 
-def validate_image_size(img):
+def adjust_image_for_model(img):
     logger.info(f"Image Height: {img.height}, Image Width: {img.width}")
     if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
-        raise RuntimeError(
-            "Image size is too large. Please use an image less than {MAX_DIMENSION}px on both width and height"
-        )
+        img = img.thumbnail(MAX_DIMENSION, Image.ANTIALIAS)
+
+    return img
 
 
 def inference(img, style):
-    validate_image_size(img)
+    img = adjust_image_for_model(img)
 
     # load image
     input_image = img.convert(COLOUR_MODEL)
