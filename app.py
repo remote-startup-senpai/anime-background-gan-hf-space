@@ -13,6 +13,7 @@ from PIL import Image
 
 import logging
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 MAX_DIMENSION = 1280
