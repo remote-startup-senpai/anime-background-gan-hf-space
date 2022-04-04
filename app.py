@@ -1,3 +1,4 @@
+from cgitb import enable
 import os
 import sys
 import torch
@@ -8,6 +9,7 @@ import torchvision.transforms as transforms
 
 from torch.autograd import Variable
 from network.Transformer import Transformer
+from huggingface_hub import hf_hub_download
 
 from PIL import Image
 
@@ -15,6 +17,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Constants
 
 MAX_DIMENSION = 1280
 MODEL_PATH = "models"
@@ -27,23 +31,37 @@ STYLE_KON = "Satoshi Kon"
 DEFAULT_STYLE = STYLE_SHINKAI
 STYLE_CHOICE_LIST = [STYLE_SHINKAI, STYLE_HOSODA, STYLE_MIYAZAKI, STYLE_KON]
 
+MODEL_REPO_ID = "akiyamasho/AnimeBackgroundGAN"
+MODEL_FILE_SHINKAI = "shinkai_makoto.pth"
+MODEL_FILE_HOSODA = "hosoda_mamoru.pth"
+MODEL_FILE_MIYAZAKI = "miyazaki_hayao.pth"
+MODEL_FILE_KON = "kon_satoshi.pth"
+
+# Model Initalisation
+shinkai_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_SHINKAI)
+hosoda_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_HOSODA)
+miyazaki_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_MIYAZAKI)
+kon_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_KON)
+
 shinkai_model = Transformer()
 hosoda_model = Transformer()
 miyazaki_model = Transformer()
 kon_model = Transformer()
 
+enable_gpu = torch.cuda.is_available()
+map_location = torch.device("cuda") if enable_gpu else "cpu"
 
 shinkai_model.load_state_dict(
-    torch.load(os.path.join(MODEL_PATH, "shinkai_makoto.pth"))
+    torch.load(shinkai_model_hfhub, map_location=map_location)
 )
 hosoda_model.load_state_dict(
-    torch.load(os.path.join(MODEL_PATH, "hosoda_mamoru.pth"))
+    torch.load(hosoda_model_hfhub, map_location=map_location)
 )
 miyazaki_model.load_state_dict(
-    torch.load(os.path.join(MODEL_PATH, "miyazaki_hayao.pth"))
+    torch.load(miyazaki_model_hfhub, map_location=map_location)
 )
 kon_model.load_state_dict(
-    torch.load(os.path.join(MODEL_PATH, "kon_satoshi.pth"))
+    torch.load(kon_model_hfhub, map_location=map_location)
 )
 
 shinkai_model.eval()
@@ -51,8 +69,7 @@ hosoda_model.eval()
 miyazaki_model.eval()
 kon_model.eval()
 
-enable_gpu = torch.cuda.is_available()
-
+# Functions
 
 def get_model(style):
     if style == STYLE_SHINKAI:
@@ -108,6 +125,8 @@ def inference(img, style):
 
     return transforms.ToPILImage()(output_image)
 
+
+# Gradio setup
 
 title = "Anime Background GAN"
 description = "Gradio Demo for CartoonGAN by Chen Et. Al. Models are Shinkai Makoto, Hosoda Mamoru, Kon Satoshi, and Miyazaki Hayao."
