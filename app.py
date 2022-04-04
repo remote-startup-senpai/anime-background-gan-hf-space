@@ -38,10 +38,11 @@ MODEL_FILE_MIYAZAKI = "miyazaki_hayao.pth"
 MODEL_FILE_KON = "kon_satoshi.pth"
 
 # Model Initalisation
-shinkai_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_SHINKAI)
-hosoda_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_HOSODA)
-miyazaki_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_MIYAZAKI)
-kon_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_KON)
+
+shinkai_model_hfhub = hf_hub_download(repo_id="akiyamasho/AnimeBackgroundGAN", filename="shinkai_makoto.pth")
+hosoda_model_hfhub = hf_hub_download(repo_id="akiyamasho/AnimeBackgroundGAN", filename="hosoda_mamoru.pth")
+miyazaki_model_hfhub = hf_hub_download(repo_id="akiyamasho/AnimeBackgroundGAN", filename="miyazaki_hayao.pth")
+kon_model_hfhub = hf_hub_download(repo_id="akiyamasho/AnimeBackgroundGAN", filename="kon_satoshi.pth")
 
 shinkai_model = Transformer()
 hosoda_model = Transformer()
@@ -69,7 +70,6 @@ hosoda_model.eval()
 miyazaki_model.eval()
 kon_model.eval()
 
-# Functions
 
 def get_model(style):
     if style == STYLE_SHINKAI:
@@ -125,8 +125,6 @@ def inference(img, style):
 
     return transforms.ToPILImage()(output_image)
 
-
-# Gradio setup
 
 title = "Anime Background GAN"
 description = "Gradio Demo for CartoonGAN by Chen Et. Al. Models are Shinkai Makoto, Hosoda Mamoru, Kon Satoshi, and Miyazaki Hayao."
