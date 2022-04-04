@@ -72,7 +72,7 @@ def get_model(style):
 def adjust_image_for_model(img):
     logger.info(f"Image Height: {img.height}, Image Width: {img.width}")
     if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
-        img = img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.ANTIALIAS)
+        img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.ANTIALIAS)
 
     return img
 
