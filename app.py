@@ -50,7 +50,7 @@ hosoda_model.eval()
 miyazaki_model.eval()
 kon_model.eval()
 
-disable_gpu = True
+enable_gpu = torch.cuda.is_available()
 
 
 def get_model(style):
@@ -72,6 +72,7 @@ def get_model(style):
 def adjust_image_for_model(img):
     logger.info(f"Image Height: {img.height}, Image Width: {img.width}")
     if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
+        logger.info(f"Dimensions too large. Resizing to {MAX_DIMENSION}px.")
         img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.ANTIALIAS)
 
     return img
@@ -89,10 +90,10 @@ def inference(img, style):
     # preprocess, (-1, 1)
     input_image = -1 + 2 * input_image
 
-    if disable_gpu:
-        input_image = Variable(input_image).float()
-    else:
+    if enable_gpu:
         input_image = Variable(input_image).cuda()
+    else:
+        input_image = Variable(input_image).float()
 
     # forward
     model = get_model(style)
