@@ -1,4 +1,5 @@
 from cgitb import enable
+from ctypes.wintypes import HFONT
 import os
 import sys
 import torch
@@ -20,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 # Constants
 
+
+HF_TOKEN = os.getenv('HF_TOKEN')
+
 MAX_DIMENSION = 1280
 MODEL_PATH = "models"
 COLOUR_MODEL = "RGB"
@@ -38,10 +42,10 @@ MODEL_FILE_MIYAZAKI = "miyazaki_hayao.pth"
 MODEL_FILE_KON = "kon_satoshi.pth"
 
 # Model Initalisation
-shinkai_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_SHINKAI)
-hosoda_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_HOSODA)
-miyazaki_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_MIYAZAKI)
-kon_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_KON)
+shinkai_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_SHINKAI, use_auth_token=HF_TOKEN)
+hosoda_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_HOSODA, use_auth_token=HF_TOKEN)
+miyazaki_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_MIYAZAKI, use_auth_token=HF_TOKEN)
+kon_model_hfhub = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILE_KON, use_auth_token=HF_TOKEN)
 
 shinkai_model = Transformer()
 hosoda_model = Transformer()
