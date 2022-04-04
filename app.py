@@ -91,8 +91,10 @@ def inference(img, style):
     input_image = -1 + 2 * input_image
 
     if enable_gpu:
+        logger.info(f"CUDA found. Using GPU.")
         input_image = Variable(input_image).cuda()
     else:
+        logger.info(f"CUDA not found. Using CPU.")
         input_image = Variable(input_image).float()
 
     # forward
