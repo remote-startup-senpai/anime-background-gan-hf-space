@@ -56,20 +56,33 @@ miyazaki_model = Transformer()
 kon_model = Transformer()
 
 enable_gpu = torch.cuda.is_available()
-map_location = torch.device("cuda") if enable_gpu else "cpu"
+
+if enable_gpu:
+    # If you have multiple cards,
+    # you can assign to a specific card, eg: "cuda:0"("cuda") or "cuda:1"
+    # Use the first card by default: "cuda"
+    device = torch.device("cuda")
+else:
+    device = "cpu"
 
 shinkai_model.load_state_dict(
-    torch.load(shinkai_model_hfhub, map_location=map_location)
+    torch.load(shinkai_model_hfhub, device)
 )
 hosoda_model.load_state_dict(
-    torch.load(hosoda_model_hfhub, map_location=map_location)
+    torch.load(hosoda_model_hfhub, device)
 )
 miyazaki_model.load_state_dict(
-    torch.load(miyazaki_model_hfhub, map_location=map_location)
+    torch.load(miyazaki_model_hfhub, device)
 )
 kon_model.load_state_dict(
-    torch.load(kon_model_hfhub, map_location=map_location)
+    torch.load(kon_model_hfhub, device)
 )
+
+if enable_gpu:
+    shinkai_model = shinkai_model.to(device)
+    hosoda_model = hosoda_model.to(device)
+    miyazaki_model = miyazaki_model.to(device)
+    kon_model = kon_model.to(device)
 
 shinkai_model.eval()
 hosoda_model.eval()
@@ -118,7 +131,8 @@ def inference(img, style):
 
     if enable_gpu:
         logger.info(f"CUDA found. Using GPU.")
-        input_image = Variable(input_image).cuda()
+        # Allows to specify a card for calculation
+        input_image = Variable(input_image).to(device)
     else:
         logger.info(f"CUDA not found. Using CPU.")
         input_image = Variable(input_image).float()
