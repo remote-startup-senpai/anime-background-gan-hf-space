@@ -1,7 +1,3 @@
-from cgitb import enable
-from ctypes.wintypes import HFONT
-import os
-import sys
 import torch
 import gradio as gr
 import numpy as np
