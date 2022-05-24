@@ -1,7 +1,3 @@
-from cgitb import enable
-from ctypes.wintypes import HFONT
-import os
-import sys
 import torch
 import gradio as gr
 import numpy as np
@@ -112,7 +108,7 @@ def adjust_image_for_model(img):
     logger.info(f"Image Height: {img.height}, Image Width: {img.width}")
     if img.height > MAX_DIMENSION or img.width > MAX_DIMENSION:
         logger.info(f"Dimensions too large. Resizing to {MAX_DIMENSION}px.")
-        img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.ANTIALIAS)
+        img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.Resampling.LANCZOS)
 
     return img
 
@@ -183,5 +179,4 @@ gr.Interface(
     article=article,
     examples=examples,
     allow_flagging="never",
-    allow_screenshot=False,
 ).launch(enable_queue=True)

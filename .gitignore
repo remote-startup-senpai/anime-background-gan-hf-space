@@ -8,6 +8,9 @@ pretrained_model/*.pth
 test_img/*
 test_output/*
 
+# gradio tmps
+gradio_queue.db
+
 .history/
 .vscode/
 __pycache__/
